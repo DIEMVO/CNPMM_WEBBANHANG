@@ -9,7 +9,6 @@ function HomeScreen(props) {
   const productList = useSelector(state => state.productList);
   const {products, loading, error } = productList;
   const dispatch = useDispatch();
-  ////////////////////////////////////////END PART 12, START PART 13/////////////////////
   useEffect(() => {  
     dispatch(listProducts());
     return () => {
