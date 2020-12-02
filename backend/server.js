@@ -13,6 +13,8 @@ mongoose.connect(mongodbUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
+}).then(ok=>{
+    console.log("Connect successfully");
 }).catch(error => console.log(error.reason));
 
 const app = express();
