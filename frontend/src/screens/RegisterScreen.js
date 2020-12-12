@@ -1,82 +1,99 @@
-import React, {useEffect, useState} from "react";
-import { Link } from "react-router-dom";
-import {useSelector, useDispatch} from 'react-redux';
-import {register} from '../actions/userActions';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { register } from '../actions/userActions';
+import LoadingBox from '../components/LoadingBox';
+import MessageBox from '../components/MessageBox';
 
-function RegisterScreen(props) {
-  
+export default function RegisterScreen(props) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rePassword, setRePassword] = useState('');
-  const userRegister = useSelector(state => state.userRegister);
-  const {loading, userInfo, error} = userRegister;
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const redirect = props.location.search
+    ? props.location.search.split('=')[1]
+    : '/';
+
+  const userRegister = useSelector((state) => state.userRegister);
+  const { userInfo, loading, error } = userRegister;
 
   const dispatch = useDispatch();
-  const redirect = props.location.search?props.location.search.split("=")[1]:'/'; 
-  useEffect(()=> {
-    if (userInfo){
-        props.history.push(redirect);    // if sign in success, redirect user to home page
-    }
-    return () => {
-      //
-    };
-
-  }, [userInfo]);
-
   const submitHandler = (e) => {
-      e.preventDefault();   // to prevent freshing screen when user click this button
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      alert('Password and confirm password are not match');
+    } else {
       dispatch(register(name, email, password));
-
-  }
-  return <div className = "form">
-    <form onSubmit = {submitHandler}>
-        <ul className = "form-container">
-            <li>
-                <h2> Create Account</h2>
-            </li>
-            <li>
-                {loading && <div>Loading...</div>}
-                {error && <div>{error}</div>}
-            </li>
-            <li>
-                <label htmlFor="name">
-                    Name
-                </label>
-                <input type="name" name = "name" id ="name" onChange={(e) => setName(e.target.value)}>
-                </input>
-            </li>
-            <li>
-                <label htmlFor="email">
-                    Email
-                </label>
-                <input type="email" name = "email" id ="email" onChange={(e) => setEmail(e.target.value)}>
-                </input>
-            </li>
-            <li>
-                <label htmlFor="password">
-                    Password
-                </label>
-                <input type="password" name = "password" id="password" onChange={(e) => setPassword(e.target.value)}>
-                </input>
-            </li>
-            <li>
-                <label htmlFor="rePassword">
-                    Re-enter Password
-                </label>
-                <input type="password" name = "rePassword" id="rePassword" onChange={(e) => setRePassword(e.target.value)}>
-                </input>
-            </li>
-            <li>
-                <button type="submit" className = "button primary"> Register</button>
-            </li>
-            <li>
-                Already have an account? 
-                <Link to={redirect === "/" ? "signin": "signin?redirect=" + redirect} className="button secondary text-center" >Create your account</Link>
-            </li>
-
-        </ul>
-    </form>
-  </div>
+    }
+  };
+  useEffect(() => {
+    if (userInfo) {
+      props.history.push(redirect);
+    }
+  }, [props.history, redirect, userInfo]);
+  return (
+    <div>
+      <form className="form" onSubmit={submitHandler}>
+        <div>
+          <h1>Create Account</h1>
+        </div>
+        {loading && <LoadingBox></LoadingBox>}
+        {error && <MessageBox variant="danger">{error}</MessageBox>}
+        <div>
+          <label htmlFor="name">Name</label>
+          <input
+            type="text"
+            id="name"
+            placeholder="Enter name"
+            required
+            onChange={(e) => setName(e.target.value)}
+          ></input>
+        </div>
+        <div>
+          <label htmlFor="email">Email address</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter email"
+            required
+            onChange={(e) => setEmail(e.target.value)}
+          ></input>
+        </div>
+        <div>
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter password"
+            required
+            onChange={(e) => setPassword(e.target.value)}
+          ></input>
+        </div>
+        <div>
+          <label htmlFor="confirmPassword">Confirm Password</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            placeholder="Enter confirm password"
+            required
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          ></input>
+        </div>
+        <div>
+          <label />
+          <button className="primary" type="submit">
+            Register
+          </button>
+        </div>
+        <div>
+          <label />
+          <div>
+            Already have an account?{' '}
+            <Link to={`/signin?redirect=${redirect}`}>Sign-In</Link>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
 }
-export default RegisterScreen;

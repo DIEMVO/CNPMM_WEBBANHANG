@@ -1,46 +1,51 @@
+import bcrypt from 'bcryptjs';
 export default {
+
+    users: [
+        {
+          name: 'Chopper',
+          email: 'admin@example.com',
+          password: bcrypt.hashSync('123456', 8),
+          isAdmin: true,
+          },
+        {
+          name: 'John',
+          email: 'user@example.com',
+          password: bcrypt.hashSync('123456', 8),
+          isAdmin: false,
+        },
+      ],
     products:[
         {
-        _id: '1',
         name: 'Slim Shirt',
+        category: 'Shirts',
         image:'/images/img1.jpg',
-        price:60,
         brand: 'Nike',
-        rating: 4.5,
-        numberReview: 10,
-        countInStock: 6,
+        description: 'high quality product',
     },
     {
-        _id: '2',
         name: 'Slim Shirt',
+        category: 'Shirts',
         image:'/images/img1.jpg',
-        price:60,
         brand: 'Nike',
-        rating: 4.5,
-        numberReview: 10,
-        countInStock: 6,
+        description: 'high quality product',
     },
     {
-        _id: '3',
         name: 'Slim Shirt',
+        category: 'Shirts',
         image:'/images/img1.jpg',
-        price:60,
         brand: 'Nike',
-        rating: 4.5,
-        numberReview: 10,
-        countInStock: 6,
+        description: 'high quality product',
     },
     {
-        _id: '4',
         name: 'Slim Shirt',
+        category: 'Shirts',
         image:'/images/img1.jpg',
-        price:60,
         brand: 'Nike',
-        rating: 4.5,
-        numberReview: 10,
-        countInStock: 6,
+        description: 'high quality product',
     },
     
 
 ]
+
 }

@@ -1,80 +1,127 @@
-import React, {useEffect, useState} from "react";
-import { Link } from "react-router-dom";
-import {useSelector, useDispatch} from 'react-redux';
-import { detailsProduct } from "../actions/productActions";
+import React from 'react';
+import { Link } from 'react-router-dom';
+import Rating from '../components/Rating';
+import { useSelector, useDispatch } from 'react-redux';
+import LoadingBox from './../components/LoadingBox';
+import MessageBox from './../components/MessageBox';
+import { detailsProduct } from '../actions/productActions';
+import { useEffect } from 'react';
+import { useState } from 'react';
 
-function ProductScreen(props) {
-  const [qty, setQty] = useState(1);
-  const productDetails = useSelector(state => state.productDetails);
-  const {product, loading, error} = productDetails;
+export default function ProductScreen(props) {
+
   const dispatch = useDispatch();
-  useEffect(()=> {
-    dispatch(detailsProduct(props.match.params.id));
-    return () => {
-      //
-    };
+  const productId = props.match.params.id;
+  const productDetails = useSelector((state) => state.productDetails);
+  const {loading, product, error} = productDetails;
+  const [qty, setQty] = useState(1);
+  const userSignin = useSelector((state) => state.userSignin);
 
-  }, []);
-  const handleAddToCart = () => {
-    props.history.push("/cart/"+ props.match.params.id + "?qty=" + qty )
-  }
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
 
+  useEffect(() => {
+    dispatch(detailsProduct(productId));
+  }, [dispatch, productId]);
 
-  return <div>
-      <div className="back-to-result">
-        <Link to="/"> Back to result</Link>
-      </div>
-      {loading? <div>Loading...</div>:
-        error? <div>{error}</div>:
-        (
-          <div className="details">
-        <div className="details-image">
-            <img src={product.image} alt="product"></img>    
-        </div>
+  const addToCartHandler = () => {
+    props.history.push(`/cart/${productId}?qty=${qty}`);
+  };
 
-        <div className="details-info">
-            <ul>
+  return (
+    <div>
+      {loading ? (
+        <LoadingBox></LoadingBox>
+      ) : error ? (
+        <MessageBox variant="danger">{error}</MessageBox>
+      ) : (
+        <div>
+          <Link to="/">Back to result</Link>
+          <div className="row top">
+            <div className="col-2">
+              <img
+                className="large"
+                src={product.image}
+                alt={product.name}
+              ></img>
+            </div>
+            <div className="col-1">
+              <ul>
                 <li>
-                    <h4>{product.name}</h4>
-
+                  <h1>{product.name}</h1>
                 </li>
                 <li>
-                    {product.rating} Stars ({product.numberReview} Reviews)
+                  <Rating
+                    rating={product.rating}
+                    numReviews={product.numReviews}
+                  ></Rating>
                 </li>
-                <li>Price: <b>{product.price}$ </b> </li>
+                <li>Pirce : ${product.price}</li>
                 <li>
-                    Decription:
-                    <div>
-                        {product.description}
+                  Description:
+                  <p>{product.description}</p>
+                </li>
+              </ul>
+            </div>
+            <div className="col-1">
+              <div className="card card-body">
+                <ul>
+                  <li>
+                    <div className="row">
+                      <div>Price</div>
+                      <div className="price">${product.price}</div>
                     </div>
-                </li>
-            </ul>
-        </div>
+                  </li>
+                  <li>
+                    <div className="row">
+                      <div>Status</div>
+                      <div>
+                        {product.countInStock > 0 ? (
+                          <span className="success">In Stock</span>
+                        ) : (
+                          <span className="danger">Unavailable</span>
+                        )}
+                      </div>
+                    </div>
+                  </li>
 
-        <div className="details-action">
-        <ul>
-            <li>Price: {product.price}</li>
-            <li>Status: {product.countInStock > 0? "In Stock" : "Unavailable!"} </li>
-            <li>
-                Qty: <select value={qty} onChange={(e) => { setQty(e.target.value) } }>
-                  {[...Array(product.countInStock).keys()].map(x => 
-                    <option key={x+1} value={x+1}>{x+1}</option>
+                  {product.countInStock > 0 && (
+                    <>
+                      <li>
+                        <div className="row">
+                          <div>Qty</div>
+                          <div>
+                            <select
+                              value={qty}
+                              onChange={e => setQty(e.target.value)}
+                            >
+                              {[...Array(product.countInStock).keys()].map(
+                                x => (
+                                  <option key={x + 1} value={x + 1}>
+                                    {x + 1}
+                                  </option>
+                                )
+                              )}
+                            </select>
+                          </div>
+                        </div>
+                      </li>
+                      <li>
+                        <button
+                          onClick={addToCartHandler}
+                          className="primary block"
+                        >
+                          Add to Cart
+                        </button>
+                      </li>
+                    </>
                   )}
-                </select>
-            </li>
-            <li>
-            { product.countInStock > 0 &&
-            <button onClick={handleAddToCart} className="button">Add to Cart</button> 
-            }
-            </li>
-        </ul>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
-
-      </div>
-        )
-      
-      }
-      
+      )}
     </div>
+  );
 }
-export default ProductScreen;

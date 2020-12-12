@@ -1,25 +1,41 @@
 import express from 'express';
 import Product from '../models/productModel';
 import { isAuth, isAdmin } from '../util';
+import data from '../data.js';
+import expressAsyncHandler from 'express-async-handler';
 
-const router = express.Router();
+const productRouter = express.Router();
 
-router.get("/", async (req, res)=> {
+productRouter.get(
+  "/",
+  expressAsyncHandler(async (req, res) => {
     const products = await Product.find({});
     res.send(products);
-});
+  })
+);
 
-router.get("/:id", async (req, res)=> {
-    const product = await Product.findOne({_id: req.params.id});
-    if (product){
-        return res.send(product);
-    }
-    else{
-        return res.status(404).send({message: 'Product not found!'});
-    }
-});
+productRouter.get(
+  "/seed",
+  expressAsyncHandler(async (req, res) => {
+    // await Product.remove({});
+    const createdProducts = await Product.insertMany(data.products);
+    res.send({ createdProducts });
+  })
+);
 
-router.post("/",isAuth, isAdmin, async (req,res) => {
+productRouter.get(
+  "/:id",
+  expressAsyncHandler(async (req, res) => {
+    const product = await Product.findById(req.params.id);
+    if (product) {
+      res.send(product);
+    } else {
+      res.status(404).send({ message: "Product Not Found" });
+    }
+  })
+);
+
+productRouter.post("/",isAuth, isAdmin, async (req,res) => {
     const product = new Product({
         name: req.body.name,
         price: req.body.price,
@@ -38,7 +54,7 @@ router.post("/",isAuth, isAdmin, async (req,res) => {
     return res.status(500).send({message: 'Error in creating Product'});
 })
 
-router.put("/:id",isAuth, isAdmin, async (req,res) => {
+productRouter.put("/:id",isAuth, isAdmin, async (req,res) => {
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (product) {
@@ -58,7 +74,7 @@ router.put("/:id",isAuth, isAdmin, async (req,res) => {
     
 })
 
-router.delete("/:id",isAuth, isAdmin, async (req, res) => {
+productRouter.delete("/:id",isAuth, isAdmin, async (req, res) => {
     const deletedProduct = await Product.findById(req.params.id);
     if(deletedProduct) {
         await deletedProduct.remove();
@@ -69,4 +85,4 @@ router.delete("/:id",isAuth, isAdmin, async (req, res) => {
     }
 });
 
-export default router;
+export default productRouter;

@@ -1,117 +1,127 @@
-import React, {useEffect} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {Link} from 'react-router-dom';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import CheckoutSteps from '../components/CheckoutSteps';
 
-function PlaceOrderScreen(props){
-
-    const cart = useSelector(state => state.cart);
-
-    const {cartItems, shipping, payment} = cart;
-    if(!shipping.address)
-    {
-        props.history.push("/shipping");
-    } 
-    else if(!payment.paymentMethod)
-    {
-        props.history.push("/payment");
-    }
-    const itemsPrice = cartItems.reduce((a, c) => a + c.price * c.qty, 0);
-    const shippingPrice = itemsPrice >100 ? 0:10;
-    const taxPrice = 0.15*itemsPrice;
-    const totalPrice = itemsPrice + shippingPrice + taxPrice;
-
-
-    const dispatch = useDispatch();
-    
-    const placeOrderHandler = () =>{
-
-    }
-
-    useEffect(() => {
-
-    }, []);
-    const checkoutHandler = () => {
-        props.history.push("/signin?redirect=shipping");
-    }
-
-    return (
-      <div>
-        <CheckoutSteps step1 step2 step3 step4></CheckoutSteps>
-        <div className="placeorder">
-          <div className="placeorder-info">
-            <div>
-              <h3>Shipping</h3>
-              <div>
-                {cart.shipping.address}, {cart.shipping.city},
-                {cart.shipping.postalCode}, {cart.shipping.country},
+export default function PlaceOrderScreen(props) {
+  const cart = useSelector((state) => state.cart);
+  if (!cart.paymentMethod) {
+    props.history.push('/payment');
+  }
+  const toPrice = (num) => Number(num.toFixed(2)); //lm tron 2 so thap phan
+  cart.itemsPrice = toPrice(
+    cart.cartItems.reduce((a, c) => a + c.qty * c.price, 0)
+  );
+  cart.shippingPrice = cart.itemsPrice > 100 ? toPrice(0) : toPrice(10); //free ship khi tong tien lon hon 100
+  cart.taxPrice = toPrice(0.15 * cart.itemsPrice);
+  cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
+  const placeOrderHandler = () => {
+    // TODO: dispatch place order action
+  };
+  return (
+    <div>
+      <CheckoutSteps step1 step2 step3 step4></CheckoutSteps>
+      <div className="row top">
+        <div className="col-2">
+          <ul>
+            <li>
+              <div className="card card-body">
+                <h2>Shipping</h2>
+                <p>
+                  <strong>Name:</strong> {cart.shippingAddress.fullName} <br />
+                  <strong>Address: </strong> {cart.shippingAddress.address},
+                  {cart.shippingAddress.city}, {cart.shippingAddress.postalCode}
+                  ,{cart.shippingAddress.country}
+                </p>
               </div>
-            </div>
-            <div>
-              <h3>Payment</h3>
-              <div>Payment Method: {cart.payment.paymentMethod}</div>
-            </div>
-            <div>
-              <ul className="cart-list-container">
-                <li>
-                  <h3>Shopping Cart</h3>
-                  <div>Price</div>
-                </li>
-                {cartItems.length === 0 ? (
-                  <div> Cart is empty</div>
-                ) : (
-                  cartItems.map(item => (
-                    <li>
-                      <div className="cart-image">
-                        <img src={item.image} alt="product" />
-                      </div>
-
-                      <div className="cart-name">
+            </li>
+            <li>
+              <div className="card card-body">
+                <h2>Payment</h2>
+                <p>
+                  <strong>Method:</strong> {cart.paymentMethod}
+                </p>
+              </div>
+            </li>
+            <li>
+              <div className="card card-body">
+                <h2>Order Items</h2>
+                <ul>
+                  {cart.cartItems.map((item) => (
+                    <li key={item.product}>
+                      <div className="row">
                         <div>
-                          <Link to={"/product/" + item.product}>
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="small"
+                          ></img>
+                        </div>
+                        <div className="min-30">
+                          <Link to={`/product/${item.product}`}>
                             {item.name}
                           </Link>
                         </div>
-                        <div>Qty: {item.qty}</div>
+
+                        <div>
+                          {item.qty} x ${item.price} = ${item.qty * item.price}
+                        </div>
                       </div>
-                      <div className="cart-price">${item.price}</div>
                     </li>
-                  ))
-                )}
-              </ul>
-            </div>
-          </div>
-          <div className="placeorder-action">
+                  ))}
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div className="col-1">
+          <div className="card card-body">
             <ul>
               <li>
-                <button className="button primary full-width" onClick={placeOrderHandler}>Place Order</button>
+                <h2>Order Summary</h2>
               </li>
               <li>
-                <h3>Order Summary</h3>
+                <div className="row">
+                  <div>Items</div>
+                  <div>${cart.itemsPrice.toFixed(2)}</div>
+                </div>
               </li>
               <li>
-                <div>Items</div>
-                <div>${itemsPrice}</div>
+                <div className="row">
+                  <div>Shipping</div>
+                  <div>${cart.shippingPrice.toFixed(2)}</div>
+                </div>
               </li>
               <li>
-                <div>Shipping</div>
-                <div>${shippingPrice}</div>
+                <div className="row">
+                  <div>Tax</div>
+                  <div>${cart.taxPrice.toFixed(2)}</div>
+                </div>
               </li>
               <li>
-                <div>Tax</div>
-                <div>${taxPrice}</div>
+                <div className="row">
+                  <div>
+                    <strong> Order Total</strong>
+                  </div>
+                  <div>
+                    <strong>${cart.totalPrice.toFixed(2)}</strong>
+                  </div>
+                </div>
               </li>
               <li>
-                <div>Order Total</div>
-                <div>${totalPrice}</div>
+                <button
+                  type="button"
+                  onClick={placeOrderHandler}
+                  className="primary block"
+                  disabled={cart.cartItems.length === 0}
+                >
+                  Place Order
+                </button>
               </li>
             </ul>
-             
           </div>
         </div>
       </div>
-    );
-    
-
+    </div>
+  );
 }
-export default PlaceOrderScreen;

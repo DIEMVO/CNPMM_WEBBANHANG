@@ -1,53 +1,62 @@
 import express from 'express';
+import expressAsyncHandler from 'express-async-handler';
 import User from '../models/userModel';
-import { getToken } from '../util';
+import { getToken, generateToken } from '../util';
+import bcrypt from 'bcryptjs';
+import userModel from './../models/userModel';
+import data from '../data';
 
-const router = express.Router();
+const userRouter = express.Router();
 
-router.post('/signin', async (req, res) => {
-    const signinUser = await User.findOne({
-        email: req.body.email,
-        password: req.body.password
-    });
-    if (signinUser){
+
+userRouter.get('/seed', async (req, res) => {
+  const createUsers = await userModel.insertMany(data.users);
+  res.send({createUsers});
+});
+userRouter.post(
+  "/signin",
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      if (bcrypt.compareSync(req.body.password, user.password)) {
         res.send({
-            _id: signinUser.id,
-            name: signinUser.name,
-            email: signinUser.email,
-            isAdmin: signinUser.isAdmin,
-            token: getToken(signinUser)
-        })
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          isAdmin: user.isAdmin,
+          token: generateToken(user)
+        });
+        return;
+      }
     }
-    else {
-        res.status(401).send({msg:'Invalid Email or Password!'});
-    }
-})
+    res.status(401).send({ message: "Invalid email or password" });
+  })
+);
+  
 
 // REGISTER ROUTE
-router.post('/register', async (req, res) => {
+userRouter.post(
+  '/register',
+  expressAsyncHandler(async (req, res) => {
     const user = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password
+      name: req.body.name,
+      email: req.body.email,
+      password: bcrypt.hashSync(req.body.password, 8),
     });
-    const newUser = await user.save();
-    if (newUser){
-        res.send({
-            _id: newUser.id,
-            name: newUser.name,
-            email: newUser.email,
-            isAdmin: newUser.isAdmin,
-            token: getToken(newUser)
-        })
-    }
-    else {
-        res.status(401).send({msg:'Invalid User Data!'});
-    }
-})
+    const createdUser = await user.save();
+    res.send({
+      _id: createdUser._id,
+      name: createdUser.name,
+      email: createdUser.email,
+      isAdmin: createdUser.isAdmin,
+      token: generateToken(createdUser),
+    });
+  })
+);
 
 
 
-router.get("/createadmin", async (req, res) => {
+userRouter.get("/createadmin", async (req, res) => {
     try {
         const user = new User({
             name: 'Chopper',
@@ -63,4 +72,4 @@ router.get("/createadmin", async (req, res) => {
     }  
 });
 
-export default router;
+export default userRouter;
