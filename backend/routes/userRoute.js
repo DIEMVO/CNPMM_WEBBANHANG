@@ -13,18 +13,20 @@ userRouter.get('/seed', async (req, res) => {
   const createUsers = await userModel.insertMany(data.users);
   res.send({createUsers});
 });
+
+//signin
 userRouter.post(
   "/signin",
   expressAsyncHandler(async (req, res) => {
-    const user = await User.findOne({ email: req.body.email });
-    if (user) {
+    const user = await User.findOne({ email: req.body.email }); //check email co ton tai trong userModel khong
+    if (user) { //neu co ton tai user thi check pass
       if (bcrypt.compareSync(req.body.password, user.password)) {
         res.send({
           _id: user._id,
           name: user.name,
           email: user.email,
           isAdmin: user.isAdmin,
-          token: generateToken(user)
+          token: generateToken(user)  //lay token de authenticate next request, nhung request yeu cau authenticate se dung token, khong can dang nhap lai
         });
         return;
       }

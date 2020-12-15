@@ -10,7 +10,7 @@ const generateToken = user => {
       isAdmin: user.isAdmin,
       isSeller: user.isSeller,
     },
-    config.JWT_SECRET,
+    config.JWT_SECRET, //jwt_secret nhu la key de encrypt data va de tao token, nen duoc bao mat
     {
       expiresIn: "30d"
     }
