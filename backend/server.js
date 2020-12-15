@@ -4,6 +4,7 @@ import config from './config';
 import mongoose from 'mongoose';
 import userRoute from './routes/userRoute';
 import productRoute from './routes/productRoute';
+import orderRouter from './routes/orderRouter';
 
 dotenv.config();
 
@@ -26,7 +27,8 @@ mongoose.connect(mongodbUrl || 'mongodb+srv://dbUser:dbUser123@cluster0.nrpsz.mo
 
 app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
-// app.get('/', (req, res) => {
-//     res.send('Server is ready');
-// });
+app.use('/api/orders', orderRouter);
+app.get('/', (req, res) => {
+    res.send('Server is ready');
+});
 app.listen(5000, ()=>{ console.log("Server started at http://localhost:5000")})

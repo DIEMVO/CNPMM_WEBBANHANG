@@ -9,7 +9,7 @@ export default {
           isAdmin: true,
           },
         {
-          name: 'John',
+          name: 'Chopper',
           email: 'user@example.com',
           password: bcrypt.hashSync('123456', 8),
           isAdmin: false,

@@ -27,7 +27,7 @@ body {
 }
 header {
   grid-area: header;
-  background-color: #203040;
+  background-color: #F55302;
 }
 main {
   grid-area: main;
@@ -35,7 +35,9 @@ main {
 }
 footer {
   grid-area: footer;
-  background-color: #203040;
+  text-align: center;
+  
+  background-color: #F55302;
   color: #ffffff;
 }
 /* Common */

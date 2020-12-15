@@ -8,7 +8,7 @@ const generateToken = user => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
-      isSeller: user.isSeller
+      isSeller: user.isSeller,
     },
     config.JWT_SECRET,
     {
@@ -16,6 +16,7 @@ const generateToken = user => {
     }
   );
 };
+
 
 const getToken = user => {
   return jwt.sign(
@@ -31,6 +32,8 @@ const getToken = user => {
     }
   );
 };
+
+//add middle ware to authorization 
 const isAuth = (req, res, next) => {
     const authorization = req.headers.authorization;
     if (authorization) {
