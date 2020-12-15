@@ -13,6 +13,7 @@ import PaymentMethodScreen from './screens/PaymentMethodScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
 import { signout } from './actions/userActions';
 import OrderScreen from './screens/OrderScreen';
+import OrderHistoryScreen from './screens/OrderHistoryScreen';
 
 
 function App() {
@@ -121,6 +122,7 @@ function App() {
             <Route path="/payment" component={PaymentMethodScreen} />
             <Route path="/placeorder" component={PlaceOrderScreen} />
             <Route path ="/order/:id" component = {OrderScreen}/> 
+            <Route path="/orderhistory" component = {OrderHistoryScreen}/>
             <Route path="/signin" component={SigninScreen} />
             <Route path="/register" component={RegisterScreen} />
             <Route path="/product/:id" component={ProductScreen} />
