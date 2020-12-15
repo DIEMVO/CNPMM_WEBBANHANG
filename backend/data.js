@@ -2,18 +2,24 @@ import bcrypt from 'bcryptjs';
 export default {
 
     users: [
+        // {
+        //   name: 'Chopper',
+        //   email: 'admin@example.com',
+        //   password: bcrypt.hashSync('123456', 8),
+        //   isAdmin: true,
+        //   },
+        // {
+        //   name: 'Chopper',
+        //   email: 'user@example.com',
+        //   password: bcrypt.hashSync('123456', 8),
+        //   isAdmin: false,
+        // },
         {
           name: 'Chopper',
-          email: 'admin@example.com',
+          email: 'vanspykid85@gmail.com',
           password: bcrypt.hashSync('123456', 8),
           isAdmin: true,
           },
-        {
-          name: 'Chopper',
-          email: 'user@example.com',
-          password: bcrypt.hashSync('123456', 8),
-          isAdmin: false,
-        },
       ],
     products:[
         {

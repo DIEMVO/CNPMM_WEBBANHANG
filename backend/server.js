@@ -28,6 +28,9 @@ mongoose.connect(mongodbUrl || 'mongodb+srv://dbUser:dbUser123@cluster0.nrpsz.mo
 app.use("/api/users", userRoute);
 app.use("/api/products", productRoute);
 app.use('/api/orders', orderRouter);
+app.use('/api/config/paypal', (req, res) => {
+    res.send(config.PAYPAL_CLIENT_ID || 'sb');
+})
 app.get('/', (req, res) => {
     res.send('Server is ready');
 });
