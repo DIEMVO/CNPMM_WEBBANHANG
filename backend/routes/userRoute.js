@@ -56,22 +56,34 @@ userRouter.post(
   })
 );
 
+//user detail
+userRouter.get(
+  "/:id",
+  expressAsyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      res.send(user);
+    } else {
+      res.status(404).send({ message: "User not found" });
+    }
+  })
+);
 
-
-userRouter.get("/createadmin", async (req, res) => {
-    try {
-        const user = new User({
-            name: 'Chopper',
-            email: 'vanspykid85@gmail.com',
-            password: '123456',
-            isAdmin: true
-        });
+// userRouter.get("/createadmin", async (req, res) => {
+//     try {
+//         const user = new User({
+//             name: 'Chopper',
+//             email: 'vanspykid85@gmail.com',
+//             password: '123456',
+//             isAdmin: true
+//         });
     
-        const newUser = await user.save();
-        res.send(newUser);
-    } catch (error) {
-        res.send({msg: error.message }); 
-    }  
-});
+//         const newUser = await user.save();
+//         res.send(newUser);
+//     } catch (error) {
+//         res.send({msg: error.message }); 
+//     }  
+// });
+
 
 export default userRouter;
