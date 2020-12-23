@@ -9,7 +9,7 @@ import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants';
 
 export default function ProfileScreen() {
     //to update profile
-    const [name, setName] = useState('');
+    const [name, setName] = useState(''); //lay list
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');

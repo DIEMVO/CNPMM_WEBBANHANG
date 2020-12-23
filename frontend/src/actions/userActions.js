@@ -18,7 +18,7 @@ import {
 export const signin = (email, password) => async dispatch => {
   dispatch({ type: USER_SIGNIN_REQUEST, payload: { email, password } });
   try {
-    const { data } = await Axios.post("/api/users/signin", { email, password });
+    const { data } = await Axios.post("/api/users/signin", { email, password }); //goi request tu backend len
     dispatch({ type: USER_SIGNIN_SUCCESS, payload: data });
     localStorage.setItem("userInfo", JSON.stringify(data)); // when user close web and open again, the data still save because it was save in localStorage
   } catch (error) {
@@ -42,6 +42,7 @@ export const signout = () => dispatch => {
 export const register = (name, email, password) => async dispatch => {
   dispatch({ type: USER_REGISTER_REQUEST, payload: { email, password } });
   try {
+
     const { data } = await Axios.post("/api/users/register", {
       name,
       email,

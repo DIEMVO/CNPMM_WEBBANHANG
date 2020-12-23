@@ -20,8 +20,8 @@ userRouter.post(
   expressAsyncHandler(async (req, res) => {
     const user = await User.findOne({ email: req.body.email }); //check email co ton tai trong userModel khong
     if (user) { //neu co ton tai user thi check pass
-      if (bcrypt.compareSync(req.body.password, user.password)) {
-        res.send({
+      if (bcrypt.compareSync(req.body.password, user.password)) { //email va password lay tu ben front-end
+        res.send({      //backend respone cho frontend
           _id: user._id,
           name: user.name,
           email: user.email,
