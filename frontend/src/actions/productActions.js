@@ -87,20 +87,24 @@ export const updateProduct = (product) => async(dispatch, getState) => {
   }
 };
 
-export const deleteProduct = productId => async (dispatch, getState) => {
+export const deleteProduct = (productId) => async (dispatch, getState) => {
+  dispatch({ type: PRODUCT_DELETE_REQUEST, payload: productId });
+  const {
+    userSignin: { userInfo }
+  } = getState();
   try {
-    const {
-      userSignin: { userInfo }
-    } = getState();
-    dispatch({ type: PRODUCT_DELETE_REQUEST, payload: productId });
-    const { data } = await Axios.delete("/api/products/" + productId, {
+    const { data } = Axios.delete(`/api/products/${productId}`, {
       headers: {
-        Authorization: "Bearer " + userInfo.token
+        Authorization: `Bearer ${userInfo.token}`
       }
     });
-    dispatch({ type: PRODUCT_DELETE_SUCCESS, payload: data, success: true });
+    dispatch({ type: PRODUCT_DELETE_SUCCESS});
   } catch (error) {
-    dispatch({ type: PRODUCT_DELETE_FAIL, payload: error.message });
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    dispatch({ type: PRODUCT_DELETE_FAIL, payload: message });
   }
 };
 
