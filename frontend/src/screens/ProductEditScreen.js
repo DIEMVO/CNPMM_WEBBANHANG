@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { detailsProduct } from '../actions/productActions';
+import { detailsProduct, updateProduct } from '../actions/productActions';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
+import { PRODUCT_UPDATE_RESET } from '../constants/productConstants';
+import Axios from 'axios';
 
 export default function ProductEditScreen(props) {
   const productId = props.match.params.id;
@@ -16,9 +18,19 @@ export default function ProductEditScreen(props) {
 
   const productDetails = useSelector((state) => state.productDetails);
   const { loading, error, product } = productDetails;
+
+  const productUpdate = useSelector((state) => state.productUpdate);
+  const {loading: loadingUpdate, error: errorUpdate, success: successUpdate} = productUpdate;
+
   const dispatch = useDispatch();
-  useEffect(() => {       
-    if (!product ) { //Neu khong co product thi load tu backend len, product._id !== productId để không show product trc do 
+  useEffect(() => {  
+    if (successUpdate) {
+      props.history.push('/productlist'); //redirect user ve productListScreen sau khi da update xong
+    }     
+    if (!product || product._id !== productId ||successUpdate ) { //Neu khong co product thi load tu backend len, product._id !== productId để không show product trc do 
+      //  kiem tra successUpdate de refresh lai trang khi update thanh cong, tranh show lai thong tin cu
+      //  successUpdate = true thi se dispatch toi detailsProduct 1 lan nua
+      dispatch({type: PRODUCT_UPDATE_RESET});
       dispatch(detailsProduct(productId));
     } else {
       setName(product.name);
@@ -29,10 +41,36 @@ export default function ProductEditScreen(props) {
       setBrand(product.brand);
       setDescription(product.description);
     }
-  }, [product, dispatch, productId]);
+  }, [product, dispatch, productId, successUpdate, props.history]);
   const submitHandler = (e) => {
     e.preventDefault();
-    // TODO: dispatch update product
+    dispatch(updateProduct({_id: productId, name, price, image,category,brand, countInStock, description}))
+  };
+
+
+  const [loadingUpload, setLoadingUpload] = useState(false);
+  const [errorUpload, setErrorUpload] = useState('');
+
+  const userSignin = useSelector((state) => state.userSignin);
+  const {userInfo} = userSignin;
+  const uploadFileHandler = async e => {
+    const file = e.target.files[0];
+    const bodyFormData = new FormData(); //khi gửi req để upload file thi cần tạo 1 object từ class FormData
+    bodyFormData.append("image", file);
+    setLoadingUpload(true);
+    try {
+      const { data } = await Axios.post("/api/uploads", bodyFormData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      });
+      setImage(data);
+      setLoadingUpload(false); //khi upload thanh cong thi khong show LoadingBox
+    } catch (error) {
+      setErrorUpload(error.message);
+      setLoadingUpload(false);
+    }
   };
   return (
     <div>
@@ -40,6 +78,8 @@ export default function ProductEditScreen(props) {
         <div>
           <h1>Edit Product {productId}</h1>
         </div>
+        {loadingUpdate && <LoadingBox></LoadingBox>}
+        {errorUpdate && <MessageBox variant="danger">{errorUpdate}</MessageBox>}
         {loading ? (
           <LoadingBox></LoadingBox>
         ) : error ? (
@@ -76,6 +116,14 @@ export default function ProductEditScreen(props) {
                 onChange={(e) => setImage(e.target.value)}
               ></input>
             </div>
+            <div>
+              <label htmlFor="imageFile"> Image File</label>
+              <input type="file" id= "imageFile" label="Choose Image"
+              onChange = {uploadFileHandler}></input>
+              {loadingUpload && <LoadingBox></LoadingBox>}
+              {errorUpload && <MessageBox variant="danger">{errorUpload}</MessageBox>}
+            </div>
+
             <div>
               <label htmlFor="category">Category</label>
               <input
