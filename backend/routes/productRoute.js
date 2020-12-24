@@ -42,7 +42,7 @@ productRouter.post(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const product = new Product({
-      name: 'samle name ' + Date.now(), // tránh tạo 2 tên trùng nhau
+      name: 'name ' + Date.now(), // tránh tạo 2 tên trùng nhau
       image: '/images/img1.jpg',
       price: 0,
       category: 'sample category',
