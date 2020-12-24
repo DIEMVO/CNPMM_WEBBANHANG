@@ -7,7 +7,7 @@ import CartScreen from './screens/CartScreen';
 import SigninScreen from './screens/SigninScreen';
 import { useSelector, useDispatch } from 'react-redux';
 import RegisterScreen from './screens/RegisterScreen';
-import ProductsScreen from './screens/ProductsScreen';
+import ProductListScreen from './screens/ProductListScreen';
 import ShippingAddressScreen from './screens/ShippingAddressScreen';
 import PaymentMethodScreen from './screens/PaymentMethodScreen';
 import PlaceOrderScreen from './screens/PlaceOrderScreen';
@@ -16,6 +16,7 @@ import OrderScreen from './screens/OrderScreen';
 import OrderHistoryScreen from './screens/OrderHistoryScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import PrivateRoute from './components/PrivateRoute';
+import AdminRoute from './components/AdminRoute';
 
 
 function App() {
@@ -76,7 +77,7 @@ function App() {
             ) : (
               <Link to="/signin">Sign In</Link>
             )}
-            
+
             {userInfo && userInfo.isAdmin && (
               <div className="dropdown">
                 <Link to="#admin">
@@ -113,24 +114,25 @@ function App() {
                 <i className="fa fa-close"></i>
               </button>
             </li>
-            
           </ul>
         </aside>
 
         <main className="main">
           <div className="content">
-            <Route path="/products" component={ProductsScreen} />
             <Route path="/shipping" component={ShippingAddressScreen} />
             <Route path="/payment" component={PaymentMethodScreen} />
             <Route path="/placeorder" component={PlaceOrderScreen} />
-            <Route path ="/order/:id" component = {OrderScreen}/> 
-            <Route path="/orderhistory" component = {OrderHistoryScreen}/>
-            <PrivateRoute path="/profile" component = {ProfileScreen}/>
+            <Route path="/order/:id" component={OrderScreen} />
+            <Route path="/orderhistory" component={OrderHistoryScreen} />
+            <PrivateRoute path="/profile" component={ProfileScreen} />
             <Route path="/signin" component={SigninScreen} />
             <Route path="/register" component={RegisterScreen} />
-            <Route path="/product/:id" component={ProductScreen} />
+            <Route path="/product/:id" component={ProductScreen}  exact/>
             <Route path="/cart/:id?" component={CartScreen} />
             <Route path="/" exact={true} component={HomeScreen} />
+
+            <AdminRoute path="/productlist" component={ProductListScreen} exact />
+
           </div>
         </main>
         <footer className="footer">Footer</footer>

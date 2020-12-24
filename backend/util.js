@@ -55,12 +55,19 @@ const isAuth = (req, res, next) => {
     }
   };
 
-const isAdmin = (req, res, next) => {
+  // middle ware isAdmin
+const isAdmin = (req, res, next) => {     
   if (req.user && req.user.isAdmin) {
     next();
   }
-  res.status(401).send({ msg: "Admin Token is not valid" });
+  else {
+    res.status(401).send({ message: "Admin Token is not valid" });
+  }
+  
 };
+
+
+
 const isSeller = (req, res, next) => {
   if (req.user && req.user.isSeller) {
     next();

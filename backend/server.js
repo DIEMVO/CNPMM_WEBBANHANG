@@ -2,9 +2,9 @@ import express from 'express';
 import dotenv from 'dotenv';
 import config from './config';
 import mongoose from 'mongoose';
-import userRoute from './routes/userRoute';
-import productRoute from './routes/productRoute';
 import orderRouter from './routes/orderRouter';
+import productRouter from './routes/productRoute';
+import userRouter from './routes/userRoute';
 
 dotenv.config();
 
@@ -25,8 +25,8 @@ mongoose.connect(mongodbUrl || 'mongodb+srv://dbUser:dbUser123@cluster0.nrpsz.mo
 
 
 
-app.use("/api/users", userRoute);
-app.use("/api/products", productRoute);
+app.use("/api/users", userRouter);
+app.use('/api/products', productRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/config/paypal', (req, res) => {
     res.send(config.PAYPAL_CLIENT_ID || 'sb');
