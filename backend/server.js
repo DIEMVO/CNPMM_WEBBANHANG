@@ -26,7 +26,7 @@ mongoose.connect(mongodbUrl || 'mongodb+srv://dbUser:dbUser123@cluster0.nrpsz.mo
 // }).catch(error => console.log(error.reason
 
 
-
+//Dinh tuyen API
 app.use('/api/uploads', uploadRouter);
 app.use("/api/users", userRouter);
 app.use('/api/products', productRouter);

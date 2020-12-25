@@ -1,7 +1,8 @@
 import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import Order from './../models/orderModel.js';
-import { isAuth } from '../util.js';
+import { isAuth, isAdmin } from '../util.js';
+import { Axios } from 'axios';
 
 const orderRouter = express.Router();
 
@@ -67,4 +68,28 @@ orderRouter.put(
   })
 );
 
-export default orderRouter;
+//API get orderlist order list
+orderRouter.get('/', isAuth, isAdmin, expressAsyncHandler (async(req, res) => {
+  
+  const orders = await Order.find({}).populate('user', 'name');  //get all oder item, dung populate de lay name cua user (user la field cua Oder model) trong order list vao hang orders
+  res.send(orders);
+})
+);
+
+//API  delete orderlist
+orderRouter.delete(
+  "/:id",
+  isAuth,
+  isAdmin,
+  expressAsyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id);
+    if (order) {
+      const deleteOder = await order.remove();
+      res.send({ message: "Order Deleted", order: deleteOder });
+    } else {
+      res.status(404).send({ message: "Order not found" });
+    }
+  })
+);
+
+export default orderRouter; 
