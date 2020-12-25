@@ -1,7 +1,7 @@
 import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import User from '../models/userModel';
-import { generateToken, isAuth } from '../util.js';
+import { generateToken, isAuth, isAdmin } from '../util.js';
 import bcrypt from 'bcryptjs';
 import userModel from './../models/userModel';
 import data from '../data';
@@ -88,21 +88,49 @@ userRouter.put('/profile', isAuth, expressAsyncHandler(async (req, res) => {
   }
 }));
 
-// userRouter.get("/createadmin", async (req, res) => {
-//     try {
-//         const user = new User({
-//             name: 'Chopper',
-//             email: 'vanspykid85@gmail.com',
-//             password: '123456',
-//             isAdmin: true
-//         });
-    
-//         const newUser = await user.save();
-//         res.send(newUser);
-//     } catch (error) {
-//         res.send({msg: error.message }); 
-//     }  
-// });
+//API for list user
+userRouter.get('/', isAuth, isAdmin, expressAsyncHandler(async(req, res) => {
+  const users = await User.find({});  //return all users
+  res.send(users);
+}));
 
+//API delete User by Admin
+userRouter.delete("/:id",isAuth, isAdmin, expressAsyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  if(user) {
+    if (user.isAdmin){
+      res.status(400).send({message: 'Can not delete Admin!'});
+      return;
+    }
+    const deleteUser = await user.remove();
+    res.send({message: 'User Deleted', user: deleteUser});
+  }
+  else{
+      res.status(404).send({message: 'User not found'});
+  }
+}));
+
+//API update user
+//create API for update product
+userRouter.put("/:id",isAuth, isAdmin, expressAsyncHandler(async (req,res) => {
+  const userId = req.params.id;
+  const user = await User.findById(userId);
+  if (user) {
+      user.name = req.body.name || user.name;
+      user.email = req.body.email || user.email;
+      user.isSeller = req.body.isSeller || user.isSeller;
+      user.isAdmin = req.body.isAdmin || user.isAdmin;
+      const updatedUser = await user.save();
+      if(updatedUser) {
+          return res.send({message: 'User Updated', user: updatedUser});  
+      }
+  } else {
+    res.status(404).send({message: 'User not found'});
+  }
+   
+  
+})
+);
 
 export default userRouter;
+
