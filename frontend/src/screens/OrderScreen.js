@@ -4,11 +4,12 @@ import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import LoadingBox from '../components/LoadingBox';
 import MessageBox from '../components/MessageBox';
-import { detailsOrder, payOrder } from '../actions/orderAction';
+import { detailsOrder, payOrder, deliverOrder } from '../actions/orderAction';
 import { useState } from 'react';
 import Axios from 'axios';
 import {PayPalButton} from 'react-paypal-button-v2';
 import { ORDER_PAY_RESET } from '../constants/orderConstants';
+import { ORDER_DELIVER_RESET } from './../constants/orderConstants';
 
 export default function OrderScreen(props) {
   const orderId = props.match.params.id; //lay id tu url
@@ -16,9 +17,15 @@ export default function OrderScreen(props) {
   const orderDetails = useSelector((state) => state.orderDetails);
   const {order, loading, error} = orderDetails;
 
+  //lay userInfo de xac nhan thanh toan
+  const userSignin = useSelector((state)=> state.userSignin);
+  const {userInfo} = userSignin;
+
   const orderPay = useSelector((state) => state.orderPay);
   const {loading:loadingPay, error: errorPay, success: successPay} = orderPay;
 
+  const orderDeliver = useSelector((state) => state.orderDeliver);
+  const {loading:loadingDeliver, error: errorDeliver, success: successDeliver} = orderDeliver;
 
   const dispatch = useDispatch();
 
@@ -36,8 +43,9 @@ export default function OrderScreen(props) {
       };
       document.body.appendChild(script);
     };
-    if (!order || successPay || (order && order._id !== orderId)){
+    if (!order || successPay || successDeliver || (order && order._id !== orderId)){
       dispatch({type: ORDER_PAY_RESET});
+      dispatch({type: ORDER_DELIVER_RESET});
       dispatch(detailsOrder(orderId));
     } else{
       if (!order.isPaid) {
@@ -50,11 +58,18 @@ export default function OrderScreen(props) {
       }
     }
     
-  }, [dispatch,order, orderId, sdkReady, successPay]); //khi cac tham so trong mang thay doi, ham useEffect run
+  }, [dispatch,order, orderId, sdkReady, successPay, successDeliver]); //khi cac tham so trong mang thay doi, ham useEffect run
+  
 
   const successPaymentHandler = (paymentResult) => {
     dispatch(payOrder(order, paymentResult));
   };
+
+  const deliverHandler = ()=>{
+    dispatch(deliverOrder(order._id));
+  };
+
+
   return loading ? (
     <LoadingBox></LoadingBox>
   ) : error ? (
@@ -182,6 +197,14 @@ export default function OrderScreen(props) {
                   )}
                 </li>
               )}
+              {userInfo.isAdmin && order.isPaid && !order.isDelivered &&( //neu da thanh toan va chua xac nhan giao hang thi hien thi nut deliver
+                <li>
+                  {loadingDeliver && <LoadingBox></LoadingBox>}
+                  {errorDeliver && <MessageBox variant="danger">{errorDeliver}</MessageBox>}
+                  <button type="button" className="primary block" onClick={deliverHandler}>Deliver Order</button>
+                </li>
+              )}           
+
             </ul>
           </div>
         </div>
