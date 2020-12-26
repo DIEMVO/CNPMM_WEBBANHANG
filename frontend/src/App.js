@@ -23,6 +23,9 @@ import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
 import SearchBox from './screens/SearchBox';
 import SearchResultScreen from './screens/SearchResultScreen';
+import { listProductCategories } from './actions/productActions';
+import LoadingBox from './components/LoadingBox';
+import MessageBox from './components/MessageBox';
 
 
 function App() {
@@ -36,6 +39,13 @@ function App() {
   const signoutHandler = () => {  
     dispatch(signout()); 
   };
+
+  const productCategoryList = useSelector(state => state.productCategoryList);
+  const { loading: loadingCategory, error: errorCategory, categories } = productCategoryList;
+
+  useEffect(() =>{
+    dispatch(listProductCategories());
+  },[dispatch]);
                     
   return (
     <BrowserRouter>
@@ -108,7 +118,7 @@ function App() {
           </div>
         </header>
 
-        <aside className={sidebarIsOpen ? "open" : ""}>
+        <aside className={sidebarIsOpen ? 'open' : ''}>
           <ul className="categories">
             <li>
               <strong>Categories</strong>
@@ -120,6 +130,22 @@ function App() {
                 <i className="fa fa-close"></i>
               </button>
             </li>
+            {loadingCategory ? (
+              <LoadingBox></LoadingBox>
+            ) : errorCategory ? (
+              <MessageBox variant="danger">{errorCategory}</MessageBox>
+            ) : (
+              categories.map((c) => (
+                <li key={c}>
+                  <Link
+                    to={`/search/category/${c}`}
+                    onClick={() => setSidebarIsOpen(false)}
+                  >
+                    {c}
+                  </Link>
+                </li>
+              ))
+            )}
           </ul>
         </aside>
 
@@ -138,6 +164,8 @@ function App() {
             <Route path="/cart/:id?" component={CartScreen} />
             <Route path="/" exact={true} component={HomeScreen} />
             <Route path="/search/name/:name?" exact={true} component={SearchResultScreen} />
+            <Route path="/search/category/:category" exact={true} component={SearchResultScreen} />
+            <Route path="/search/category/:category/name/:name" exact={true} component={SearchResultScreen} />
 
             <AdminRoute path="/productlist" component={ProductListScreen} exact />
             <AdminRoute path="/orderlist" component={OrderListScreen}/>

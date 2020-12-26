@@ -2,20 +2,30 @@ import React from 'react'
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts } from './../actions/productActions';
-import {useParams} from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import LoadingBox from './../components/LoadingBox';
 import MessageBox from './../components/MessageBox';
 import Product from './../components/Product';
 
 export default function SearchResultScreen(props) {
-  const { name = "all" } = useParams(); //hook
+  const { name = "all", category= "all" } = useParams(); //hook
   const dispatch = useDispatch();
   const productList = useSelector(state => state.productList);
   const { loading, error, products } = productList;
 
+  const productCategoryList = useSelector(state => state.productCategoryList);
+  const { loading: loadingCategory, error: errorCategory, categories } = productCategoryList;
+
   useEffect(() => {
-    dispatch(listProducts({ name: name !== "all" ? name : "" })); //all lay het product ra
-  }, [dispatch, name]);
+    dispatch(listProducts({ name: name !== "all" ? name : "", 
+    category: category !=="all" ? category:"" })); //all lay het product ra
+  }, [dispatch, name, category]);
+
+  const getFilterUrl= (filter) => {
+      const filterCategory = filter.category || category;
+      const filterName = filter.name || name;
+      return `/search/category/${filterCategory}/name/${filterName}`;
+  }
   return (
     <div>
       <div className="row">
@@ -30,9 +40,20 @@ export default function SearchResultScreen(props) {
       <div className="row top">
         <div className="col-1">
           <h3>Department</h3>
-          <ul>
-            <li>Catogory</li>
+          {loadingCategory ? (
+            <LoadingBox></LoadingBox>
+          ) : errorCategory ? (
+            <MessageBox variant="danger">{errorCategory}</MessageBox>
+          ) : (
+            <ul>
+                {categories.map(c=>(
+                    <li key = {c}>
+                        <Link className={ c===category ? "active" : ''} to = {getFilterUrl({category:c})}>{c}</Link>
+                    </li>
+                ))}
           </ul>
+          )}
+          
         </div>
         <div className="col-3">
           {loading ? (
