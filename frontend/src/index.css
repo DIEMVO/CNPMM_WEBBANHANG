@@ -353,3 +353,13 @@ img.large {
   border-left: 0;
 }
 
+/* Search */
+.search button {
+  background-color: aqua;
+  border-radius:0 0.5rem 0.5rem 0;
+  border-right: none;
+}
+.search input {
+  border-radius: 0.5rem 0 0 0.5rem;
+  border-right: none;
+}
