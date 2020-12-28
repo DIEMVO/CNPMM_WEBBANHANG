@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import config from "./config";
 
 const generateToken = user => {
   return jwt.sign(
@@ -10,7 +9,7 @@ const generateToken = user => {
       isAdmin: user.isAdmin,
       isSeller: user.isSeller,
     },
-    config.JWT_SECRET, //jwt_secret nhu la key de encrypt data va de tao token, nen duoc bao mat
+    process.env.JWT_SECRET, //jwt_secret nhu la key de encrypt data va de tao token, nen duoc bao mat
     {
       expiresIn: "30d"
     }
@@ -26,14 +25,14 @@ const getToken = user => {
       email: user.email,
       isAdmin: user.isAdmin
     },
-    config.JWT_SECRET,
+    process.env.JWT_SECRET,
     {
       expiresIn: "48h"
     }
   );
 };
 
-//add middle ware to authorization 
+//add middleware to authorization 
 const isAuth = (req, res, next) => {
     const authorization = req.headers.authorization;
     if (authorization) {

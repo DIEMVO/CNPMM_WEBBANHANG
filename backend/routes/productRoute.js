@@ -9,13 +9,14 @@ const productRouter = express.Router();
 productRouter.get(
   "/",
   expressAsyncHandler(async (req, res) => {
-    const name = req.query.name || '';
-    const nameFilter = name ? {name: {$regex: name, $options: 'i'}} : {};
+    const name = req.query.name || '';  //req.query trả về {name: "name"}
+    const nameFilter = name ? {name: {$regex: name, $options: 'i'}} : {}; //options: 'i' : match chữ hoa chữ thường
 
     const category = req.query.category || '';
     const categoryFilter = category ? {category} :{};
-
+    console.log(nameFilter);
     const products = await Product.find({...nameFilter, ...categoryFilter});
+    console.log(products);
     res.send(products);
   })
 );

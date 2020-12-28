@@ -1,7 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
-import config from './config';
 import mongoose from 'mongoose';
 import orderRouter from './routes/orderRouter';
 import productRouter from './routes/productRoute';
@@ -15,7 +14,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const mongodbUrl = config.MONGODB_URL;
+const mongodbUrl = process.env.MONGODB_URL;
 mongoose.connect(mongodbUrl || 'mongodb+srv://dbUser:dbUser123@cluster0.nrpsz.mongodb.net/webshopping?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -27,12 +26,12 @@ mongoose.connect(mongodbUrl || 'mongodb+srv://dbUser:dbUser123@cluster0.nrpsz.mo
 
 
 //Dinh tuyen API
-app.use('/api/uploads', uploadRouter);
+app.use('/api/uploads', uploadRouter); //app.use được sử dụng để cấu hình các middleware, các middleware function sẽ đc thực thi khi req có path match với path của route
 app.use("/api/users", userRouter);
 app.use('/api/products', productRouter);
 app.use('/api/orders', orderRouter);
 app.use('/api/config/paypal', (req, res) => {
-    res.send(config.PAYPAL_CLIENT_ID || 'sb');
+    res.send(process.env.PAYPAL_CLIENT_ID || 'sb');
 })
 
 const __dirname = path.resolve();    //return current folder, save lai trong dirname

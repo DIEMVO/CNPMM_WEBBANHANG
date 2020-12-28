@@ -1,4 +1,4 @@
-import { createStore, combineReducers, applyMiddleware,compose  } from 'redux';
+import { createStore, combineReducers, applyMiddleware  } from 'redux';
 import thunk from 'redux-thunk'; 
 import { productListReducer, productDetailReducer, productCreateReducer, productUpdateReducer, productDeleteReducer, productCategoryListReducer } from './reducers/productReducers';
 import {cartReducer} from './reducers/cartReducers';
@@ -47,6 +47,6 @@ const reducer = combineReducers({
     userUpdate: userUpdateReducer,
     productCategoryList: productCategoryListReducer,
 });
-const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-const store = createStore(reducer, initialState, composeEnhancer(applyMiddleware(thunk)));
+const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ;     //khai báo redux-dev-tool,
+const store = createStore(reducer, initialState, composeEnhancer(applyMiddleware(thunk)));  //áp dụng middleware
 export default store;

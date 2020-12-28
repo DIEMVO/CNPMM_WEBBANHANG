@@ -37,6 +37,7 @@ export const createOrder = order => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`
       }
     });
+    
     dispatch({ type: ORDER_CREATE_SUCCESS, payload: data.order });
     dispatch({ type: CART_EMPTY });
     localStorage.removeItem("cartItems"); //Sau khi order thanh cong, xoa cartItems

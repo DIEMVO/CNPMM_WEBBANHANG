@@ -18,6 +18,7 @@ userRouter.get('/seed', async (req, res) => {
 userRouter.post(
   "/signin",
   expressAsyncHandler(async (req, res) => {
+    console.log(req.body);
     const user = await User.findOne({ email: req.body.email }); //check email co ton tai trong userModel khong
     if (user) { //neu co ton tai user thi check pass
       if (bcrypt.compareSync(req.body.password, user.password)) { //email va password lay tu ben front-end
