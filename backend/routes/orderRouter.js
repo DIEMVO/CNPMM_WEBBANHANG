@@ -10,13 +10,13 @@ orderRouter.get('/mine', isAuth, expressAsyncHandler(async (req, res) => {
   res.send(orders);
 }));
 
+//create order
 orderRouter.post(
   '/',
   isAuth,
   expressAsyncHandler(async (req, res) => {
-    console.log(req.body);
     if (req.body.orderItems.length === 0) {
-      res.status(400).send({ message: "Cart is empty" });
+      res.status(404).send({ message: "Cart is empty" });
       
     }
     else{
@@ -72,7 +72,7 @@ orderRouter.put(
 //API get orderlist order list
 orderRouter.get('/', isAuth, isAdmin, expressAsyncHandler (async(req, res) => {
   
-  const orders = await Order.find({}).populate('user', 'name');  //get all oder item, dung populate de lay name cua user (user la field cua Oder model) trong order list vao hang orders
+  const orders = await Order.find().populate('user', 'name');  //get all oder item, dung populate de lay name cua user (user la field cua Oder model) trong order list vao hang orders
   res.send(orders);
 })
 );

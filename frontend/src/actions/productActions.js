@@ -22,7 +22,7 @@ import {
   PRODUCT_CREATE_FAIL
 } from "./../constants/productConstants";
 
-export const listProducts = ({name='', category =''}) => async (dispatch) => {
+export const listProducts = (name = '', category = '') => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_LIST_REQUEST });
     const { data } = await Axios.get(`/api/products?name=${name}&category=${category}`);

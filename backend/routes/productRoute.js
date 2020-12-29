@@ -10,13 +10,11 @@ productRouter.get(
   "/",
   expressAsyncHandler(async (req, res) => {
     const name = req.query.name || '';  //req.query trả về {name: "name"}
-    const nameFilter = name ? {name: {$regex: name, $options: 'i'}} : {}; //options: 'i' : match chữ hoa chữ thường
+    const nameFilter = name ? { name: { $regex: name, $options: 'i' } } : {}; //options: 'i' : match chữ hoa chữ thường
 
     const category = req.query.category || '';
     const categoryFilter = category ? {category} :{};
-    console.log(nameFilter);
     const products = await Product.find({...nameFilter, ...categoryFilter});
-    console.log(products);
     res.send(products);
   })
 );
@@ -24,7 +22,6 @@ productRouter.get(
 productRouter.get(
   "/seed",
   expressAsyncHandler(async (req, res) => {
-    // await Product.remove({});
     const createdProducts = await Product.insertMany(data.products);
     res.send({ createdProducts });
   })
@@ -55,15 +52,15 @@ productRouter.post(
   isAdmin,
   expressAsyncHandler(async (req, res) => {
     const product = new Product({
-      name: 'name ' + Date.now(), // tránh tạo 2 tên trùng nhau
+      name: 'product ' + Date.now(), // tránh tạo 2 tên trùng nhau
       image: '/images/img1.jpg',
       price: 0,
-      category: 'sample category',
-      brand: 'sample brand',
+      category: 'category',
+      brand: 'brand',
       countInStock: 0,
       rating: 0,
       numReviews: 0,
-      description: 'sample description',
+      description: 'description',
     });
     const createdProduct = await product.save();
     res.send({ message: 'Product Created', product: createdProduct });
