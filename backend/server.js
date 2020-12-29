@@ -36,6 +36,10 @@ app.use('/api/config/paypal', (req, res) => {
 
 const __dirname = path.resolve();    //return current folder, save lai trong dirname
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));  // su dung dirname de concat tu current folder to uploads folder
+app.use(express.static(path.join(__dirname, '/frontend/build')));
+app.get('*', (req, res) => res.sendFile(path.join(__dirname,'/frontend/build/index.html')));
+
+
 app.get('/', (req, res) => {
     res.send('Server is ready');
 });
