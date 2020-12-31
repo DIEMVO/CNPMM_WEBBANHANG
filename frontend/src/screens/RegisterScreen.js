@@ -12,7 +12,7 @@ export default function RegisterScreen(props) {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const redirect = props.location.search
-    ? props.location.search.split('=')[1]
+    ? props.location.search.split('=')[1]     //redirect=shipping => shipping
     : '/';
 
   const userRegister = useSelector((state) => state.userRegister);

@@ -7,7 +7,6 @@ const generateToken = user => {
       name: user.name,
       email: user.email,
       isAdmin: user.isAdmin,
-      isSeller: user.isSeller,
     },
     process.env.JWT_SECRET, //jwt_secret nhu la key de encrypt data va de tao token, nen duoc bao mat
     {
@@ -16,21 +15,6 @@ const generateToken = user => {
   );
 };
 
-
-const getToken = user => {
-  return jwt.sign(
-    {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      isAdmin: user.isAdmin
-    },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: "48h"
-    }
-  );
-};
 
 //add middleware to authorization 
 const isAuth = (req, res, next) => {
@@ -82,4 +66,4 @@ const isSellerOrAdmin = (req, res, next) => {
   }
 };
 
-export { getToken, isAuth, isAdmin, generateToken, isSeller, isSellerOrAdmin };
+export { isAuth, isAdmin, generateToken, isSeller, isSellerOrAdmin };

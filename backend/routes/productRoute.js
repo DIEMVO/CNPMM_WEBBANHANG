@@ -32,7 +32,7 @@ productRouter.get('/categories', expressAsyncHandler(async(req,res) => {
   res.send(categories);
 }));
 
-
+//add vao gio hang
 productRouter.get(
   "/:id",
   expressAsyncHandler(async (req, res) => {

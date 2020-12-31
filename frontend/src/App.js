@@ -174,7 +174,7 @@ function App() {
 
           </div>
         </main>
-        <footer className="footer">Footer</footer>
+        <footer className="footer"></footer>
       </div>
     </BrowserRouter>
   );

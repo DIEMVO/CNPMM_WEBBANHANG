@@ -47,7 +47,7 @@ export const detailsProduct = productId => async (dispatch) => {
     dispatch({ type: PRODUCT_DETAILS_REQUEST, payload: productId });
     const { data } = await Axios.get("/api/products/" + productId);
     dispatch({ type: PRODUCT_DETAILS_SUCCESS, payload: data });
-  } catch (error) {
+  } catch (error) { 
     dispatch({
       type: PRODUCT_DETAILS_FAIL,
       payload:
