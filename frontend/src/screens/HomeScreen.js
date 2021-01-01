@@ -4,6 +4,10 @@ import { listProducts } from '../actions/productActions';
 import Product from './../components/Product';
 import LoadingBox from './../components/LoadingBox';
 import MessageBox from './../components/MessageBox';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { Carousel } from 'react-responsive-carousel';
+import { Link } from 'react-router-dom';
+
 
 export default function HomeScreen() {
   
@@ -18,6 +22,26 @@ export default function HomeScreen() {
 
   return (
     <div>
+      <>
+        <Carousel showArrows autoPlay showThumbs={false}>
+          <div>
+            <Link to="/">
+              <img src="./../../uploads/1609396321557.jpg" alt="" />
+            </Link>
+          </div>
+          <div>
+            <Link to="/">
+              <img src="./../../uploads/1609396387848.jpg" alt="" />
+            </Link>
+          </div>
+          <div>
+            <Link to="/">
+              <img src="./../../uploads/1609396804796.jpg" alt="" />
+            </Link>
+          </div>
+        </Carousel>
+      </>
+
       {loading ? (
         <LoadingBox></LoadingBox>
       ) : error ? (

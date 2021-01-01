@@ -17,7 +17,7 @@ productRouter.get(
     const products = await Product.find({...nameFilter, ...categoryFilter});
     res.send(products);
   })
-);
+);  
 
 productRouter.get(
   "/seed",

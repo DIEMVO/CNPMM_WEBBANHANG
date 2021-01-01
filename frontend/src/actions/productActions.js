@@ -22,6 +22,7 @@ import {
   PRODUCT_CREATE_FAIL
 } from "./../constants/productConstants";
 
+//action search
 export const listProducts = (name = '', category = '') => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_LIST_REQUEST });

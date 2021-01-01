@@ -363,3 +363,9 @@ img.large {
   border-radius: 0.5rem 0 0 0.5rem;
   border-right: none;
 }
+
+
+/* Carousel */
+.carousel .slide img {
+  max-width: 30rem;
+}
